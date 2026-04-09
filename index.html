@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>မဟာဘုတ်တွက်စက်</title>
+    <style>
+        body { font-family: 'Pyidaungsu', sans-serif; background-color: #e5ffd3d9; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        
+        .legend-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #ffbcf9d9; border: 1px solid #fbc02d; border-radius: 8px; overflow: hidden; }
+        .legend-table td { padding: 8px; border: 1px solid #fbc02d; font-size: 14px; font-weight: bold; }
+        .pao-text { color: #1807fcd9; }
+        .num-text { color: #fa2575; }
+
+        input, select { width: 90%; padding: 12px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; text-align: center; outline: none; }
+        input:focus, select:focus { border-color: #28a745; }
+        
+        button { width: 95%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        button:hover { background-color: #218838; }
+        
+        .result-title { margin-top: 20px; font-size: 18px; font-weight: bold; color: #333; }
+        .final-result { margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 10px; border: 1px solid #ffeeba; color: #856404; font-weight: bold; }
+
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .grid-item { border: 2px solid #444; padding: 12px; border-radius: 10px; background: #fff; min-height: 85px; display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
+        .house-name { font-size: 13px; color: #757575; font-weight: bold; margin-bottom: 5px; }
+        .day-label { font-size: 16px; color: #d32f2f; font-weight: bold; }
+        .empty { border: none; visibility: hidden; }
+        .highlight { background-color: #9bff9e; border-color: #fbc02d; }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            width: 100%;
+        }
+        .footer-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: 1px solid #28a745;
+            background: white;
+            color: #28a745;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-btn:hover {
+            background: #28a745;
+            color: white;
+        }
+        .blog-btn {
+            border-color: #007bff;
+            color: #007bff;
+        }
+        .blog-btn:hover {
+            background: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="color: #2c3e50;">တွက်ထွားမဟာႏဘုတ်</h2>
+
+    <table class="legend-table">
+        <tr class="pao-text">
+            <td>အ</td><td>လမ်း</td><td>ထွိုင်ႏ</td><td>ညာꩻ</td><td>သꩻ</td><td>ကဲဉ်း</td><td>ပါꩻ</td>
+        </tr>
+        <tr class="num-text">
+            <td>1</td><td>4</td><td>0/7</td><td>3</td><td>6</td><td>2</td><td>5</td>
+        </tr>
+    </table>
+
+    <input type="number" id="yearInput" placeholder="လွူးဖွါꩻနေင်ႏ (ဥပမာႏ-၁၃၅၀)">
+    
+    <select id="daySelect">
+        <option value="">-- လွိုက်သွော့မွူးနီꩻ --</option>
+        <option value="1">တနင်္နွေနေ့</option>
+        <option value="2">တနင်္လာနေ့</option>
+        <option value="3">အင်္ဂါနေ့</option>
+        <option value="4">ဗုဒ္ဓဟူးနေ့</option>
+        <option value="5">ကြာသပတေးနေ့</option>
+        <option value="6">သောကြာနေ့</option>
+        <option value="0">စနေနေ့</option>
+    </select>
+
+    <button onclick="calculate()">တွက်ထွား</button>
+
+    <div id="resultArea" style="display:none;">
+        <p id="infoText" class="result-title"></p>
+        
+        <div class="grid-container">
+            <div class="empty"></div>
+            <div id="box7" class="grid-item"><span class="house-name">အဓိပတိ</span><span id="h7" class="day-label"></span></div>
+            <div class="empty"></div>
+
+            <div id="box3" class="grid-item"><span class="house-name">အထွန်း</span><span id="h3" class="day-label"></span></div>
+            <div id="box4" class="grid-item"><span class="house-name">သိုက်</span><span id="h4" class="day-label"></span></div>
+            <div id="box5" class="grid-item"><span class="house-name">ရာဇ</span><span id="h5" class="day-label"></span></div>
+
+            <div id="box2" class="grid-item"><span class="house-name">မရဏ</span><span id="h2" class="day-label"></span></div>
+            <div id="box1" class="grid-item"><span class="house-name">ဘင်္ဂ</span><span id="h1" class="day-label"></span></div>
+            <div id="box6" class="grid-item"><span class="house-name">ပုတိ</span><span id="h6" class="day-label"></span></div>
+        </div>
+
+        <div id="analysisResult" class="final-result"></div>
+    </div>
+
+    <div class="footer">
+        <button class="footer-btn" onclick="showAbout()">အကျောင်ꩻခရာႏ</button>
+        <a href="https://khunsoeyee.blogspot.com" target="_blank" class="footer-btn blog-btn">BLOG</a>
+    </div>
+</div>
+
+<script>
+    function showAbout() {
+        // စာသားကို New Line (\n) သုံးပြီး စီစဉ်ပေးထားပါတယ်။
+        alert(
+            "✨ မင်္ဂလာဒျာႏဩ ✨\n" +
+            "----------------------------------\n" +
+            "ယိုနဝ်ꩻတွက်ထွားမဟာႏဘုတ်ကွက်ꩻ အနယ်ꩻသွူ။\n\n" +
+            "💡 ဖန်ဆင်ꩻသား -\n" +
+            "ခွန်စိုးရီ (ပုံꩻချို့ꩻထီ)\n" +
+            "----------------------------------"
+        );
+    }
+    
+    const dayNames = { 1: "တနင်ꩻနွေႏ", 2: "တနင်္လာႏ", 3: "အင်္ဂါႏ", 4: "ဗုဒ္ဓဟူꩻ", 5: "ကျာႏသပတေꩻ", 6: "သောကျာႏ", 7: "စနေႏ", 0: "စနေႏ" };
+    const houseNames = { 1: "ဘင်္ဂ", 2: "မရဏ", 3: "အထွန်း", 4: "သိုက်", 5: "ရာဇ", 6: "ပုတိ", 7: "အဓိပတိ" };
+    const sequence = [1, 4, 0, 3, 6, 2, 5];
+
+    function calculate() {
+        let year = document.getElementById('yearInput').value;
+        let selectedDay = document.getElementById('daySelect').value;
+        
+        if (!year) { alert("တဲမ်းသော့ꩻသွော့လွူးဖွါꩻနေင်ႏ"); return; }
+        if (selectedDay === "") { alert("လွိုက်သွော့မွူးနီꩻ"); return; }
+
+        let rem = year % 7;
+        let calcRem = (rem === 0) ? 7 : rem;
+
+        document.getElementById('infoText').innerText = "အကျွင်ꩻလꩻ " + calcRem + " သွူဩ။";
+
+        let startIndex = sequence.indexOf(rem);
+        let housesMap = {};
+
+        for (let i = 1; i <= 7; i++) {
+            let dayVal = sequence[(startIndex + (i - 1)) % 7];
+            document.getElementById('h' + i).innerText = dayNames[dayVal] + " (" + dayVal + ")";
+            housesMap[dayVal] = i;
+            document.getElementById('box' + i).classList.remove('highlight');
+        }
+
+        let birthDayInt = parseInt(selectedDay);
+        let houseIndex = housesMap[birthDayInt];
+        let houseName = houseNames[houseIndex];
+        
+        document.getElementById('analysisResult').innerHTML = 
+            dayNames[birthDayInt] + "သားနဝ်ꩻဖွါꩻ<br><span style='font-size:24px; color:#d32f2f;'>" + houseName + "</span> သွူဩ။";
+
+        document.getElementById('box' + houseIndex).classList.add('highlight');
+        document.getElementById('resultArea').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
