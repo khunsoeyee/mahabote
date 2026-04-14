@@ -6,7 +6,7 @@
     <title>မဟာဘုတ်တွက်စက်</title>
     <style>
         body { font-family: 'Pyidaungsu', sans-serif; background-color: #e5ffd3d9; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .container { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; position: relative; overflow: hidden; }
         
         .legend-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #ffbcf9d9; border: 1px solid #fbc02d; border-radius: 8px; overflow: hidden; }
         .legend-table td { padding: 8px; border: 1px solid #fbc02d; font-size: 14px; font-weight: bold; }
@@ -28,6 +28,45 @@
         .day-label { font-size: 16px; color: #d32f2f; font-weight: bold; }
         .empty { border: none; visibility: hidden; }
         .highlight { background-color: #9bff9e; border-color: #fbc02d; }
+
+        /* --- About Modal Styles --- */
+        #aboutModal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+        }
+        .animate-text {
+            opacity: 0;
+            transform: translateY(20px);
+            display: block;
+            margin: 10px 0;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .close-about {
+            margin-top: 20px;
+            padding: 8px 20px;
+            background: #28a745;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
 
         .footer {
             margin-top: 30px;
@@ -54,18 +93,9 @@
             align-items: center;
             justify-content: center;
         }
-        .footer-btn:hover {
-            background: #28a745;
-            color: white;
-        }
-        .blog-btn {
-            border-color: #007bff;
-            color: #007bff;
-        }
-        .blog-btn:hover {
-            background: #007bff;
-            color: white;
-        }
+        .footer-btn:hover { background: #28a745; color: white; }
+        .blog-btn { border-color: #007bff; color: #007bff; }
+        .blog-btn:hover { background: #007bff; color: white; }
     </style>
 </head>
 <body>
@@ -123,17 +153,42 @@
     </div>
 </div>
 
+<div id="aboutModal">
+    <div class="modal-content">
+        <div id="aboutText"></div>
+        <button class="close-about" onclick="closeAbout()">ပိတ်ဒါး</button>
+    </div>
+</div>
+
 <script>
+    const aboutData = [
+        { text: "✨ မင်္ဂလာဒျာႏဩ ✨", color: "#e91e63" },
+        { text: "-----------------------", color: "#9c27b0" },
+        { text: "ယိုနဝ်ꩻတွက်ထွားမဟာႏဘုတ်ကွက်ꩻ အနယ်ꩻသွူ။", color: "#2196f3" },
+        { text: "💡 ဖန်ဆင်ꩻသား -", color: "#ff9800" },
+        { text: "ခွန်စိုးရီ (ပုံꩻချို့ꩻထီ)", color: "#4caf50" },
+        { text: "-----------------------", color: "#9c27b0" }
+    ];
+
     function showAbout() {
-        // စာသားကို New Line (\n) သုံးပြီး စီစဉ်ပေးထားပါတယ်။
-        alert(
-            "✨ မင်္ဂလာဒျာႏဩ ✨\n" +
-            "----------------------------------\n" +
-            "ယိုနဝ်ꩻတွက်ထွားမဟာႏဘုတ်ကွက်ꩻ အနယ်ꩻသွူ။\n\n" +
-            "💡 ဖန်ဆင်ꩻသား -\n" +
-            "ခွန်စိုးရီ (ပုံꩻချို့ꩻထီ)\n" +
-            "----------------------------------"
-        );
+        const modal = document.getElementById('aboutModal');
+        const container = document.getElementById('aboutText');
+        container.innerHTML = '';
+        modal.style.display = 'flex';
+
+        aboutData.forEach((item, index) => {
+            const span = document.createElement('span');
+            span.innerText = item.text;
+            span.className = 'animate-text';
+            span.style.color = item.color;
+            // အချိန်ခြားပြီး တစ်ကြောင်းချင်းစီ ပေါ်လာစေရန်
+            span.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.4}s`;
+            container.appendChild(span);
+        });
+    }
+
+    function closeAbout() {
+        document.getElementById('aboutModal').style.display = 'none';
     }
     
     const dayNames = { 1: "တနင်ꩻနွေႏ", 2: "တနင်္လာႏ", 3: "အင်္ဂါႏ", 4: "ဗုဒ္ဓဟူꩻ", 5: "ကျာႏသပတေꩻ", 6: "သောကျာႏ", 7: "စနေႏ", 0: "စနေႏ" };
