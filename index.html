@@ -130,7 +130,7 @@
 <div id="customModal">
     <div class="modal-content">
         <div id="modalBody"></div>
-        <button class="close-btn" onclick="closeModal()">လက်ခံဒါး</button>
+        <button class="close-btn" onclick="closeModal()">မွေးသွူ</button>
     </div>
 </div>
 
@@ -177,13 +177,13 @@
         if (!year) {
             yearInput.classList.add('error-shake');
             setTimeout(() => yearInput.classList.remove('error-shake'), 400);
-            showModal("<div class='error-msg'>⚠️ သတိပြုရန်</div>တဲမ်းသော့ꩻသွော့လွူးဖွါꩻနေင်ႏ");
+            showModal("<div class='error-msg'>⚠️ သတိꩻ</div>တဲမ်းသော့ꩻသွော့လွူးဖွါꩻနေင်ႏ");
             return;
         }
         if (selectedDay === "") {
             daySelect.classList.add('error-shake');
             setTimeout(() => daySelect.classList.remove('error-shake'), 400);
-            showModal("<div class='error-msg'>⚠️ သတိပြုရန်</div>လွိုက်သွော့မွူးနီꩻ");
+            showModal("<div class='error-msg'>⚠️ သတိꩻ</div>လွိုက်သွော့မွူးနီꩻ");
             return;
         }
 
