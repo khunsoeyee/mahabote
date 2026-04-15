@@ -6,16 +6,25 @@
     <title>မဟာဘုတ်တွက်စက်</title>
     <style>
         body { font-family: 'Pyidaungsu', sans-serif; background-color: #e5ffd3d9; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; position: relative; overflow: hidden; }
+        .container { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; position: relative; }
         
         .legend-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #ffbcf9d9; border: 1px solid #fbc02d; border-radius: 8px; overflow: hidden; }
         .legend-table td { padding: 8px; border: 1px solid #fbc02d; font-size: 14px; font-weight: bold; }
         .pao-text { color: #1807fcd9; }
         .num-text { color: #fa2575; }
 
-        input, select { width: 90%; padding: 12px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; text-align: center; outline: none; }
+        input, select { width: 90%; padding: 12px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; text-align: center; outline: none; transition: 0.3s; }
         input:focus, select:focus { border-color: #28a745; }
         
+        /* Shake Animation for Error */
+        .error-shake { animation: shake 0.4s ease-in-out; border-color: #ff4757 !important; background-color: #fff2f2; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+        }
+
         button { width: 95%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 18px; font-weight: bold; transition: 0.3s; }
         button:hover { background-color: #218838; }
         
@@ -29,8 +38,8 @@
         .empty { border: none; visibility: hidden; }
         .highlight { background-color: #9bff9e; border-color: #fbc02d; }
 
-        /* --- About Modal Styles --- */
-        #aboutModal {
+        /* --- Custom Modals (About & Error) --- */
+        #customModal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -45,53 +54,22 @@
             border-radius: 20px;
             max-width: 300px;
             text-align: center;
-            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .animate-text {
-            opacity: 0;
-            transform: translateY(20px);
-            display: block;
-            margin: 10px 0;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .close-about {
-            margin-top: 20px;
-            padding: 8px 20px;
-            background: #28a745;
-            color: white;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-        }
+        .animate-text { opacity: 0; transform: translateY(20px); display: block; margin: 8px 0; font-weight: bold; font-size: 18px; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        
+        .close-btn { margin-top: 20px; padding: 10px 25px; background: #28a745; color: white; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
+        .error-msg { color: #ff4757; font-size: 18px; font-weight: bold; margin-bottom: 10px; }
 
         .footer {
-            margin-top: 30px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-            display: flex;
-            justify-content: space-around;
-            gap: 10px;
-            width: 100%;
+            margin-top: 30px; padding-top: 15px; border-top: 1px solid #ddd;
+            display: flex; justify-content: space-around; gap: 10px; width: 100%;
         }
         .footer-btn {
-            flex: 1;
-            padding: 10px;
-            font-size: 14px;
-            border-radius: 8px;
-            border: 1px solid #28a745;
-            background: white;
-            color: #28a745;
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            flex: 1; padding: 10px; font-size: 14px; border-radius: 8px; border: 1px solid #28a745;
+            background: white; color: #28a745; cursor: pointer; text-decoration: none; font-weight: bold; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
         }
         .footer-btn:hover { background: #28a745; color: white; }
         .blog-btn { border-color: #007bff; color: #007bff; }
@@ -129,21 +107,17 @@
 
     <div id="resultArea" style="display:none;">
         <p id="infoText" class="result-title"></p>
-        
         <div class="grid-container">
             <div class="empty"></div>
             <div id="box7" class="grid-item"><span class="house-name">အဓိပတိ</span><span id="h7" class="day-label"></span></div>
             <div class="empty"></div>
-
             <div id="box3" class="grid-item"><span class="house-name">အထွန်း</span><span id="h3" class="day-label"></span></div>
             <div id="box4" class="grid-item"><span class="house-name">သိုက်</span><span id="h4" class="day-label"></span></div>
             <div id="box5" class="grid-item"><span class="house-name">ရာဇ</span><span id="h5" class="day-label"></span></div>
-
             <div id="box2" class="grid-item"><span class="house-name">မရဏ</span><span id="h2" class="day-label"></span></div>
             <div id="box1" class="grid-item"><span class="house-name">ဘင်္ဂ</span><span id="h1" class="day-label"></span></div>
             <div id="box6" class="grid-item"><span class="house-name">ပုတိ</span><span id="h6" class="day-label"></span></div>
         </div>
-
         <div id="analysisResult" class="final-result"></div>
     </div>
 
@@ -153,58 +127,68 @@
     </div>
 </div>
 
-<div id="aboutModal">
+<div id="customModal">
     <div class="modal-content">
-        <div id="aboutText"></div>
-        <button class="close-about" onclick="closeAbout()">မွေးသွူ</button>
+        <div id="modalBody"></div>
+        <button class="close-btn" onclick="closeModal()">လက်ခံဒါး</button>
     </div>
 </div>
 
 <script>
-    const aboutData = [
-        { text: "✨ မင်္ဂလာဒျာႏဩ ✨", color: "#e91e63" },
-        { text: "-----------------------", color: "#9c27b0" },
-        { text: "ယိုနဝ်ꩻတွက်ထွားမဟာႏဘုတ်ကွက်ꩻ အနယ်ꩻသွူ။", color: "#2196f3" },
-        { text: "💡 ဖန်ဆင်ꩻသား -", color: "#ff9800" },
-        { text: "ခွန်စိုးရီ (ပုံꩻချို့ꩻထီ)", color: "#4caf50" },
-        { text: "-----------------------", color: "#9c27b0" }
-    ];
-
-    function showAbout() {
-        const modal = document.getElementById('aboutModal');
-        const container = document.getElementById('aboutText');
-        container.innerHTML = '';
-        modal.style.display = 'flex';
-
-        aboutData.forEach((item, index) => {
-            const span = document.createElement('span');
-            span.innerText = item.text;
-            span.className = 'animate-text';
-            span.style.color = item.color;
-            // အချိန်ခြားပြီး တစ်ကြောင်းချင်းစီ ပေါ်လာစေရန်
-            span.style.animation = `fadeInUp 0.6s ease forwards ${index * 0.4}s`;
-            container.appendChild(span);
-        });
-    }
-
-    function closeAbout() {
-        document.getElementById('aboutModal').style.display = 'none';
-    }
-    
     const dayNames = { 1: "တနင်ꩻနွေႏ", 2: "တနင်္လာႏ", 3: "အင်္ဂါႏ", 4: "ဗုဒ္ဓဟူꩻ", 5: "ကျာႏသပတေꩻ", 6: "သောကျာႏ", 7: "စနေႏ", 0: "စနေႏ" };
     const houseNames = { 1: "ဘင်္ဂ", 2: "မရဏ", 3: "အထွန်း", 4: "သိုက်", 5: "ရာဇ", 6: "ပုတိ", 7: "အဓိပတိ" };
     const sequence = [1, 4, 0, 3, 6, 2, 5];
 
-    function calculate() {
-        let year = document.getElementById('yearInput').value;
-        let selectedDay = document.getElementById('daySelect').value;
+    function showModal(content, isError = false) {
+        const modal = document.getElementById('customModal');
+        const body = document.getElementById('modalBody');
+        body.innerHTML = content;
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('customModal').style.display = 'none';
+    }
+
+    function showAbout() {
+        const aboutData = [
+            { text: "✨ မင်္ဂလာဒျာႏဩ ✨", color: "#e91e63" },
+            { text: "-----------------------", color: "#9c27b0" },
+            { text: "ယိုနဝ်ꩻတွက်ထွားမဟာႏဘုတ်ကွက်ꩻ အနယ်ꩻသွူ။", color: "#2196f3" },
+            { text: "💡 ဖန်ဆင်ꩻသား -", color: "#ff9800" },
+            { text: "ခွန်စိုးရီ (ပုံꩻချို့ꩻထီ)", color: "#4caf50" },
+            { text: "-----------------------", color: "#9c27b0" }
+        ];
         
-        if (!year) { alert("တဲမ်းသော့ꩻသွော့လွူးဖွါꩻနေင်ႏ"); return; }
-        if (selectedDay === "") { alert("လွိုက်သွော့မွူးနီꩻ"); return; }
+        let html = "";
+        aboutData.forEach((item, index) => {
+            html += `<span class="animate-text" style="color:${item.color}; animation: fadeInUp 0.6s ease forwards ${index * 0.3}s">${item.text}</span>`;
+        });
+        showModal(html);
+    }
+
+    function calculate() {
+        let yearInput = document.getElementById('yearInput');
+        let daySelect = document.getElementById('daySelect');
+        let year = yearInput.value;
+        let selectedDay = daySelect.value;
+        
+        // Error Handling with Shake Effect
+        if (!year) {
+            yearInput.classList.add('error-shake');
+            setTimeout(() => yearInput.classList.remove('error-shake'), 400);
+            showModal("<div class='error-msg'>⚠️ သတိပြုရန်</div>တဲမ်းသော့ꩻသွော့လွူးဖွါꩻနေင်ႏ");
+            return;
+        }
+        if (selectedDay === "") {
+            daySelect.classList.add('error-shake');
+            setTimeout(() => daySelect.classList.remove('error-shake'), 400);
+            showModal("<div class='error-msg'>⚠️ သတိပြုရန်</div>လွိုက်သွော့မွူးနီꩻ");
+            return;
+        }
 
         let rem = year % 7;
         let calcRem = (rem === 0) ? 7 : rem;
-
         document.getElementById('infoText').innerText = "အကျွင်ꩻလꩻ " + calcRem + " သွူဩ။";
 
         let startIndex = sequence.indexOf(rem);
